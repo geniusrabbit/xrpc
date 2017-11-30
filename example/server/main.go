@@ -29,9 +29,9 @@ func main() {
 
 	switch *flagType {
 	case "http":
-		fasthttp.NewServer(srv).Listen(*flagConnect)
+		fatalError(fasthttp.NewServer(srv).Listen(*flagConnect))
 	case "fastrpc":
-		fastrpc.NewServer(srv).Listen(*flagConnect)
+		fatalError(fastrpc.NewServer(srv).Listen(*flagConnect))
 	}
 }
 
