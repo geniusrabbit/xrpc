@@ -10,6 +10,7 @@ import (
 	"fmt"
 	"net"
 	"net/url"
+	"strings"
 
 	"github.com/geniusrabbit/xrpc"
 	"github.com/valyala/fastrpc"
@@ -102,11 +103,11 @@ func (s *server) requestCtx(ctx fastrpc.HandlerCtx) context.Context {
 }
 
 func (s *server) handlerNotFound(ctx *tlv.RequestCtx) {
-
+	ctx.Response.SwapValue([]byte(`{"error":"not found"}`))
 }
 
 func (s *server) handlerError(ctx *tlv.RequestCtx, err error) {
-
+	ctx.Response.SwapValue([]byte(`{"error":"` + strings.Replace("\"", "\\\"", err.Error(), -1) + `"}`))
 }
 
 func newHandlerCtx() fastrpc.HandlerCtx {
@@ -116,5 +117,5 @@ func newHandlerCtx() fastrpc.HandlerCtx {
 }
 
 func concurrencyLimitErrorHandler(ctx *tlv.RequestCtx, concurrency int) {
-	ctx.Response.SwapValue([]byte("too many requests"))
+	ctx.Response.SwapValue([]byte(`{"error":"too many requests"}`))
 }

@@ -67,11 +67,11 @@ func (n *pathTreeNode) Node(path []byte) *pathTreeNode {
 func (n *pathTreeNode) getOrCreateNode(peace peaceType, create bool) (node *pathTreeNode) {
 	i := sort.Search(len(n.Nodes), func(i int) bool {
 		for ix, c := range n.Nodes[i].peace {
-			if c < peace[ix] {
-				return false
+			if peace[ix] >= c {
+				return true
 			}
 		}
-		return true
+		return false
 	})
 
 	if i >= 0 && i < len(n.Nodes) && n.Nodes[i].peace == peace {
@@ -79,8 +79,8 @@ func (n *pathTreeNode) getOrCreateNode(peace peaceType, create bool) (node *path
 	}
 
 	if create {
-		n.Nodes = append(n.Nodes, &pathTreeNode{peace: peace})
-		node = n.Nodes[len(n.Nodes)-1]
+		node = &pathTreeNode{peace: peace}
+		n.Nodes = append(n.Nodes, node)
 
 		sort.Slice(n.Nodes, func(i, j int) bool {
 			for ix, c := range n.Nodes[i].peace {

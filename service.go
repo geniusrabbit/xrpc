@@ -5,7 +5,9 @@
 
 package xrpc
 
-import "errors"
+import (
+	"errors"
+)
 
 // Service errors
 var (

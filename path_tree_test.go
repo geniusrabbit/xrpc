@@ -61,6 +61,17 @@ func BenchmarkTree(b *testing.B) {
 	})
 }
 
+func TestTree(t *testing.T) {
+	testTree := newTree()
+	testTree.Add([]byte("ip"), nil)
+	testTree.Add([]byte("ua"), nil)
+	testTree.Add([]byte("common"), nil)
+
+	if testTree.Node([]byte("common")) == nil {
+		t.Fail()
+	}
+}
+
 func randomBytes(length int) (b []byte) {
 	for i := 0; i < length; i++ {
 		b = append(b, alphabet[rand.Intn(len(alphabet)-1)])
