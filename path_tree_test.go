@@ -30,7 +30,7 @@ var (
 // PASS
 // ok      github.com/geniusrabbit/billing/xrpc     35.664s
 
-func init() {
+func initData() {
 	testMap = map[string]int{}
 	testTree = newTree()
 
@@ -44,6 +44,8 @@ func init() {
 }
 
 func BenchmarkMap(b *testing.B) {
+	initData()
+	b.ResetTimer()
 	b.RunParallel(func(pb *testing.PB) {
 		for i := 0; pb.Next(); i++ {
 			mx.Lock()
@@ -54,6 +56,8 @@ func BenchmarkMap(b *testing.B) {
 }
 
 func BenchmarkTree(b *testing.B) {
+	initData()
+	b.ResetTimer()
 	b.RunParallel(func(pb *testing.PB) {
 		for i := 0; pb.Next(); i++ {
 			_ = testTree.Node(keys2[i%len(keys2)])
@@ -63,12 +67,16 @@ func BenchmarkTree(b *testing.B) {
 
 func TestTree(t *testing.T) {
 	testTree := newTree()
-	testTree.Add([]byte("ip"), nil)
-	testTree.Add([]byte("ua"), nil)
-	testTree.Add([]byte("common"), nil)
+	actions := []string{"whois", "predict", "predict_price", "device", "geo", "check"}
 
-	if testTree.Node([]byte("common")) == nil {
-		t.Fail()
+	for _, act := range actions {
+		testTree.Add([]byte(act), nil)
+	}
+
+	for _, act := range actions {
+		if node := testTree.Node([]byte(act)); node == nil {
+			t.Fail()
+		}
 	}
 }
 
